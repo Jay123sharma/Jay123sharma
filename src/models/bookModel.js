@@ -12,7 +12,11 @@ const bookSchema = new mongoose.Schema( {
         ref:"newPublisher"
     },
     price: Number,
-    ratings: Number
+    ratings: Number,
+    HardCover:{
+        type:Boolean,
+        default:false
+    }
 }, { timestamps: true });
 
 

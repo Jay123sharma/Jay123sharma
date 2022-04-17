@@ -60,7 +60,51 @@ const getBooksWithAuthorDetails = async function (req, res) {
     res.send({data: specificBook})
 }
 
+const books= async function (req, res) {
+    let b = await BookModel.updateMany(
+        {publisher_id : {$in : ["62590dced7937ca911caf8e3","62590cacd7937ca911caf8db"]}},
+            {$set : {HardCover :true}}  ,
+    )
+   
+
+    let a = await BookModel.updateMany(
+        {ratings:{$gt:3.5}},
+        {$inc:{price:10}}
+)
+    res.send({data:b})
+}
+
+    const book= async function (req, res) {
+      
+                let a = await BookModel.updateMany(
+                    {ratings:{$gt:3.5}},
+                    {$inc:{price:10}}
+        )
+        res.send({data:a})
+
+
+
+    // let =await BookModel.updateMany(
+    //     {publisher_id : {$in : ["62590dced7937ca911caf8e3","62590cacd7937ca911caf8db"]}},
+    //     {$set : {isHardCover : true}}    
+    //     );
+    // let authors=await AuthorModel.find({rating : {$gt : 3.5}},{_id : 1});
+    // let result=[];
+    // for(let i=0;i<authors.length;++i)
+    // {
+    //     result[i]=await BookModel.updateMany(
+    //         {author : authors[i]._id},
+    //         {$inc : {price : 10}}
+    //     );
+    // }
+    // res.send({msg : result});
+}
+
+
+
 module.exports.createBook= createBook
+module.exports.books=books
+module.exports.book=book
 module.exports.createBook1= createBook1
 module.exports.createBook2= createBook2
 module.exports.createBook3= createBook3
