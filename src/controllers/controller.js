@@ -37,7 +37,7 @@ const shortenURL = async function(req,res)
 
         if(cachedUrlData)
 
-            return res.status(301).send({status : true, message : "cache hit", data : cachedUrlData});
+            return res.status(201).send({status : true, message : "cache hit", data : cachedUrlData});
 
         let urlExists = await urlModel.findOne({longUrl});
 
