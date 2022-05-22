@@ -27,15 +27,15 @@ const shortenURL = async function(req,res)
 
             return res.status(400).send({status : false, message : "Bad request. Please provide longUrl in the request body."});
 
-        if(req.body.longUrl==undefined||typeof(req.body.longUrl)!='string')
+        const longUrl = req.body.longUrl.toLowerCase();
+
+        if(longUrl==undefined||typeof(longUrl)!='string')
 
             return res.status(400).send({status : false, message : "longUrl is required and should be  a string."});
 
-        if(!(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(req.body.longUrl)))
+        if(!(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(longUrl)))
         
             return res.status(400).send({ status: false, message : "The given longUrl is not valid URL!"});
-
-        const longUrl = req.body.longUrl;
 
         let cachedUrlData = JSON.parse(await GET_ASYNC(`${longUrl}`));
 
@@ -49,10 +49,11 @@ const shortenURL = async function(req,res)
         if(urlExists)
         {
             await SET_ASYNC(`${longUrl}`,120,JSON.stringify(urlExists));
+
             return res.status(200).send({status : true, message : "from db", data : { longUrl : urlExists.longUrl, shortUrl : urlExists.shortUrl, urlCode : urlExists.urlCode }});
         }
 
-        let characters = 'ABCDEFGHIJKLMNOPQRSTUWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
         
         let length = 5;
         
@@ -70,7 +71,7 @@ const shortenURL = async function(req,res)
 
         await SET_ASYNC(`${longUrl}`,120,JSON.stringify(urlData));
 
-        return res.status(201).send({status : true, data : urlData});
+        return res.status(201).send({status : true,message : "URL Shortened.",data : urlData});
             
     }
     catch(error)
@@ -89,7 +90,7 @@ const getURL = async function(req,res)
 
             return res.status(400).send({status : false, message : "Invalid request parameter. Please provide urlCode"});
 
-        if((urlCode.length!=5)&&!(/[^-]\w{5}/.test(urlCode)))
+        if((urlCode.length!=5)&&!(/[0-9a-z]{5}/.test(urlCode)))
 
             return res.status(400).send({status : false, message : "The given urlCode is invalid."});
         
